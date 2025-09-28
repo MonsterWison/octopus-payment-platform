@@ -5,6 +5,7 @@ import { PaymentModule } from './payment/payment.module';
 import { OrderModule } from './order/order.module';
 import { OctopusMerchantPlatformModule } from './octopus-merchant-platform/octopus-merchant-platform.module';
 import { AuthModule } from './auth/auth.module';
+import { LlmModule } from './llm/llm.module';
 import { User } from './auth/entities/user.entity';
 
 @Module({
@@ -24,6 +25,7 @@ import { User } from './auth/entities/user.entity';
       logging: process.env.NODE_ENV === 'development',
     }),
     AuthModule,
+    LlmModule,
     PaymentModule,
     OrderModule,
     OctopusMerchantPlatformModule,
