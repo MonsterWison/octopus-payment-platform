@@ -1,12 +1,14 @@
 import { Controller, Get, Post, Body, Param, Patch, HttpException, HttpStatus } from '@nestjs/common';
-import { OrderService } from '../services';
+import { OrderService } from '../payment/simple-services';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  async createOrder(@Body() createOrderDto: any) {
+  async createOrder(@Body() createOrderDto: CreateOrderDto) {
     try {
       const order = await this.orderService.createOrder(createOrderDto);
       return {
@@ -45,7 +47,7 @@ export class OrderController {
   }
 
   @Patch(':id')
-  async updateOrder(@Param('id') id: string, @Body() updateOrderDto: any) {
+  async updateOrder(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     try {
       const order = await this.orderService.updateOrder(id, updateOrderDto);
       return {

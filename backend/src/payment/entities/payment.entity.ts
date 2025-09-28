@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
 import { Order } from '../../order/entities/order.entity';
+import { User } from '../../auth/entities/user.entity';
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -60,6 +61,13 @@ export class Payment {
 
   @Column({ type: 'text', nullable: true })
   failureReason: string;
+
+  @ManyToOne(() => User, user => user.payments)
+  @JoinColumn({ name: 'customerId' })
+  customer: User;
+
+  @Column({ type: 'uuid', nullable: true })
+  customerId: string;
 
   @CreateDateColumn()
   createdAt: Date;

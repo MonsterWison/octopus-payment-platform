@@ -17,21 +17,3 @@ export class CreatePaymentDto {
   @IsEnum(PaymentMethod)
   method?: PaymentMethod = PaymentMethod.OCTOPUS_QR;
 }
-
-export class UpdatePaymentDto {
-  @IsOptional()
-  @IsString()
-  status?: string;
-
-  @IsOptional()
-  @IsString()
-  octopusTransactionId?: string;
-
-  @IsOptional()
-  @IsString()
-  octopusResponse?: string;
-
-  @IsOptional()
-  @IsString()
-  failureReason?: string;
-}

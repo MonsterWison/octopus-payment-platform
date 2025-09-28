@@ -10,17 +10,32 @@ export class LlmService {
   private readonly anthropic: Anthropic;
 
   constructor(private configService: ConfigService) {
-    this.openai = new OpenAI({
-      apiKey: this.configService.get('OPENAI_API_KEY'),
-    });
+    const openaiKey = this.configService.get('OPENAI_API_KEY');
+    const anthropicKey = this.configService.get('ANTHROPIC_API_KEY');
     
-    this.anthropic = new Anthropic({
-      apiKey: this.configService.get('ANTHROPIC_API_KEY'),
-    });
+    if (openaiKey && openaiKey !== 'demo_openai_key_for_development') {
+      this.openai = new OpenAI({
+        apiKey: openaiKey,
+      });
+    } else {
+      this.logger.warn('OpenAI API key not provided, LLM features will be limited');
+    }
+    
+    if (anthropicKey && anthropicKey !== 'demo_anthropic_key_for_development') {
+      this.anthropic = new Anthropic({
+        apiKey: anthropicKey,
+      });
+    } else {
+      this.logger.warn('Anthropic API key not provided, LLM features will be limited');
+    }
   }
 
   async generateResponse(prompt: string, context?: any): Promise<string> {
     try {
+      if (!this.openai) {
+        return '抱歉，AI服務暫時不可用。請聯繫客服獲取幫助。';
+      }
+      
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
@@ -40,39 +55,65 @@ export class LlmService {
       return response.choices[0].message.content;
     } catch (error) {
       this.logger.error(`LLM響應生成失敗: ${error.message}`);
-      throw new Error('無法生成AI響應');
+      return '抱歉，AI服務暫時不可用。請聯繫客服獲取幫助。';
     }
   }
 
   async analyzeTransactionData(transactions: any[]): Promise<any> {
     try {
+      if (!this.openai) {
+        return {
+          insights: 'AI分析服務暫時不可用，請稍後再試。',
+          recommendations: ['聯繫客服獲取更多幫助'],
+          trends: ['服務暫時不可用']
+        };
+      }
+      
       const prompt = `分析以下交易數據，提供洞察和建議：
       ${JSON.stringify(transactions, null, 2)}`;
 
-      const response = await this.anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 2000,
+      // 暫時使用OpenAI替代Anthropic，避免API調用問題
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4',
         messages: [
+          {
+            role: 'system',
+            content: '你是一個專業的數據分析師，能夠分析交易數據並提供洞察和建議。'
+          },
           {
             role: 'user',
             content: prompt
           }
-        ]
+        ],
+        max_tokens: 2000,
+        temperature: 0.3,
       });
 
       return {
-        insights: response.content[0].text,
-        recommendations: this.extractRecommendations(response.content[0].text),
-        trends: this.extractTrends(response.content[0].text)
+        insights: response.choices[0].message.content,
+        recommendations: this.extractRecommendations(response.choices[0].message.content),
+        trends: this.extractTrends(response.choices[0].message.content)
       };
     } catch (error) {
       this.logger.error(`交易數據分析失敗: ${error.message}`);
-      throw new Error('無法分析交易數據');
+      return {
+        insights: '分析服務暫時不可用，請稍後再試。',
+        recommendations: ['聯繫客服獲取更多幫助'],
+        trends: ['服務暫時不可用']
+      };
     }
   }
 
   async predictCustomerBehavior(customerData: any): Promise<any> {
     try {
+      if (!this.openai) {
+        return {
+          predictions: 'AI預測服務暫時不可用，請稍後再試。',
+          confidence: 0.5,
+          recommendations: ['聯繫客服獲取更多幫助']
+        };
+      }
+      
       const prompt = `基於以下客戶數據預測其支付行為：
       ${JSON.stringify(customerData, null, 2)}`;
 
@@ -99,7 +140,11 @@ export class LlmService {
       };
     } catch (error) {
       this.logger.error(`客戶行為預測失敗: ${error.message}`);
-      throw new Error('無法預測客戶行為');
+      return {
+        predictions: '預測服務暫時不可用，請稍後再試。',
+        confidence: 0.5,
+        recommendations: ['聯繫客服獲取更多幫助']
+      };
     }
   }
 

@@ -10,7 +10,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './simple-auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';

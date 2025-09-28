@@ -71,10 +71,10 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   passwordResetExpires: Date;
 
-  @OneToMany(() => Order, order => order.user)
+  @OneToMany(() => Order, order => order.customer)
   orders: Order[];
 
-  @OneToMany(() => Payment, payment => payment.user)
+  @OneToMany(() => Payment, payment => payment.customer)
   payments: Payment[];
 
   @CreateDateColumn()

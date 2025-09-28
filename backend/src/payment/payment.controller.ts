@@ -1,12 +1,15 @@
 import { Controller, Get, Post, Body, Param, Patch, HttpException, HttpStatus } from '@nestjs/common';
-import { PaymentService } from '../services';
+import { PaymentService } from './simple-services';
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { PaymentStatus } from './entities/payment.entity';
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post()
-  async createPayment(@Body() createPaymentDto: any) {
+  async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
     try {
       const payment = await this.paymentService.createPayment(createPaymentDto);
       return {
@@ -50,7 +53,8 @@ export class PaymentController {
   @Post(':id/simulate')
   async simulatePayment(@Param('id') id: string) {
     try {
-      const payment = await this.paymentService.updatePaymentStatus(id, 'completed');
+      const updateDto: UpdatePaymentDto = { status: PaymentStatus.COMPLETED };
+      const payment = await this.paymentService.updatePaymentStatus(id, updateDto);
       if (!payment) {
         throw new Error('支付記錄不存在');
       }

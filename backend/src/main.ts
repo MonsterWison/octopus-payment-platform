@@ -1,26 +1,23 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
+import { SimpleAppModule } from './simple-app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(SimpleAppModule);
   
   // 啟用CORS
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   });
-
-  // 啟用全域驗證管道
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidNonWhitelisted: true,
-  }));
-
-  const port = 3001;
+  
+  const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`🚀 八達通支付後端服務已啟動在端口 ${port}`);
+  
+  console.log(`🚀 Backend service running on http://localhost:${port}`);
+  console.log(`📊 Demo mode: ENABLED`);
 }
 
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('❌ Failed to start backend service:', error);
+  process.exit(1);
+});

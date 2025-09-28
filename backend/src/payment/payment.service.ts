@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Payment, PaymentStatus, PaymentMethod } from './entities/payment.entity';
@@ -8,17 +8,22 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { OctopusPaymentService } from './octopus-payment.service';
 import { OctopusMerchantPlatformService } from '../octopus-merchant-platform/octopus-merchant-platform.service';
 import { PaymentWebSocketGateway } from '../websocket/websocket.gateway';
+import { DemoPaymentService } from './demo-payment.service';
+
+// 檢查是否為演示模式
+const isDemoMode = process.env.DEMO_MODE === 'true' || !process.env.DB_HOST;
 
 @Injectable()
 export class PaymentService {
   constructor(
-    @InjectRepository(Payment)
-    private paymentRepository: Repository<Payment>,
-    @InjectRepository(Order)
-    private orderRepository: Repository<Order>,
-    private octopusPaymentService: OctopusPaymentService,
-    private merchantPlatformService: OctopusMerchantPlatformService,
-    private webSocketGateway: PaymentWebSocketGateway,
+    @Optional() @InjectRepository(Payment)
+    private paymentRepository?: Repository<Payment>,
+    @Optional() @InjectRepository(Order)
+    private orderRepository?: Repository<Order>,
+    private octopusPaymentService?: OctopusPaymentService,
+    private merchantPlatformService?: OctopusMerchantPlatformService,
+    private webSocketGateway?: PaymentWebSocketGateway,
+    private demoService?: DemoPaymentService,
   ) {}
 
   async createPayment(createPaymentDto: CreatePaymentDto): Promise<Payment> {

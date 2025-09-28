@@ -13,6 +13,14 @@ const nextConfig = {
       },
     ];
   },
+  webpack: (config) => {
+    // 排除後端文件夾
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/backend/**', '**/node_modules/**'],
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
