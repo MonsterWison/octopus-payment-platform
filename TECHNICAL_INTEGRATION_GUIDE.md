@@ -3195,5 +3195,5 @@ echo "備份完成: backup_$DATE.sql.gz"
 
 **聯繫信息**
 - 技術支持: tech-support@yourcompany.com
-- 文檔更新: 2024年1月
+- 文檔更新: 2025年9月29日
 - 版本: v3.0.0 (包含LLM功能 + AI輔助開發時間估算)

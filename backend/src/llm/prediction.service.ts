@@ -14,7 +14,7 @@ export class PredictionService {
         id: customerId,
         totalTransactions: 10,
         averageAmount: 150,
-        lastTransactionDate: '2024-01-15',
+        lastTransactionDate: '2025-09-15',
         paymentSuccessRate: 0.9,
       };
 
@@ -55,7 +55,7 @@ export class PredictionService {
       // 模擬客戶數據
       const customerData = {
         id: customerId,
-        lastPaymentDate: '2024-01-01',
+        lastPaymentDate: '2025-09-01',
         failedPayments: 2,
         totalAmount: 500,
       };

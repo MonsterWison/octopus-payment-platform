@@ -175,7 +175,7 @@ MIT License
 ## 📞 聯繫
 
 - 技術支持: tech-support@yourcompany.com
-- 文檔更新: 2024年1月
+- 文檔更新: 2025年9月29日
 - 版本: v2.0.0 (包含LLM功能)
 
 ---
